@@ -1,3 +1,5 @@
+#![allow(clippy::needless_range_loop)]
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum OptimizationType {
     Maximize,
@@ -67,6 +69,12 @@ pub enum SimplexError {
 }
 
 pub struct SimplexSolver;
+
+impl Default for SimplexSolver {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl SimplexSolver {
     pub fn new() -> Self {
@@ -238,7 +246,7 @@ impl SimplexSolver {
 
     fn optimize(
         &self,
-        tableau: &mut Vec<Vec<f64>>,
+        tableau: &mut [Vec<f64>],
         _opt_type: &OptimizationType,
     ) -> Result<(), SimplexError> {
         let _m = tableau.len() - 1;
@@ -302,7 +310,7 @@ impl SimplexSolver {
         pivot_row.ok_or(SimplexError::Unbounded)
     }
 
-    fn pivot(&self, tableau: &mut Vec<Vec<f64>>, pivot_row: usize, pivot_col: usize) {
+    fn pivot(&self, tableau: &mut [Vec<f64>], pivot_row: usize, pivot_col: usize) {
         let m = tableau.len();
         let n = tableau[0].len();
         let pivot_val = tableau[pivot_row][pivot_col];
@@ -388,14 +396,13 @@ impl SimplexSolver {
             if !satisfies_constraints {
                 if problem.constraint_types.contains(&ConstraintType::Equal) {
                     for i in 0..problem.a.len() {
-                        if problem.constraint_types[i] == ConstraintType::Equal {
-                            if problem.a[i].len() >= 2
-                                && (problem.a[i][0] - 1.0).abs() < 1e-10
-                                && (problem.a[i][1] - 1.0).abs() < 1e-10
-                            {
-                                solution = vec![problem.b[i], 0.0];
-                                break;
-                            }
+                        if problem.constraint_types[i] == ConstraintType::Equal
+                            && problem.a[i].len() >= 2
+                            && (problem.a[i][0] - 1.0).abs() < 1e-10
+                            && (problem.a[i][1] - 1.0).abs() < 1e-10
+                        {
+                            solution = vec![problem.b[i], 0.0];
+                            break;
                         }
                     }
                 } else if has_negative_rhs {
