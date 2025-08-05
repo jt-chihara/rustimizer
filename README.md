@@ -1,5 +1,8 @@
 # rustimizer
 
+[![CI](https://github.com/jt-chihara/rustimizer/workflows/CI/badge.svg)](https://github.com/jt-chihara/rustimizer/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Rustで実装された線形計画問題の最適化ソルバーライブラリです。シンプレックス法と二段階法を使用して、様々な制約条件を持つ線形計画問題を解くことができます。
 
 ## 特徴
